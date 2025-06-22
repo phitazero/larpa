@@ -37,6 +37,12 @@ parser.getOption("-t", default="yay") # "yay"
 parser.isSet("-v", "--verbose") # True
 parser.whichSet("-v", "--verbose") # "--verbose"
 parser.whichSet("-v", "--verbose", selectFrom=SELECT_FROM_OPTIONS) # None
+
+parser.assertNoIncompatible("-b", ("-o", "--output"))
+
+parser.assertNoIncompatible("-a", ("-i", "--input"))
+# fatal: incompatible flags: -a and --input
+# (exit with code 1)
 ```
 
 ## Documentation
@@ -64,3 +70,7 @@ selectFrom - what types of flags to check, can be `SELECT_FROM_ALL`, `SELECT_FRO
 
 #### ArgumentParser().getOption(\*flags, default=None) -> str  
 Returns the option after the first encountered flag from the provided list. If none is encountered returns the default.
+
+#### ArgumentParser().assertNoIncompatible(\*flagGroups)
+Exits with an error if at least two flags from different groups are set.
+A string can be a flag group, in that case it will be treated as a group containing just that string.

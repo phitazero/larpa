@@ -112,3 +112,18 @@ class ArgumentParser:
 		if flag is None: return default
 
 		return self.options[flag]
+
+	def assertNoIncompatible(self, *flagGroups):
+		flagGroups = list(flagGroups)
+		for i, group in enumerate(flagGroups):
+			if type(group) == str:
+				flagGroups[i] = (group,)
+
+		firstSet = None
+		for group in flagGroups:
+			if (flag := self.whichSet(*group)) is not None:
+				if firstSet is None:
+					firstSet = flag
+				else:
+					print(f"fatal: incompatible flags: {firstSet} and {flag}")
+					exit(1)
